@@ -36,17 +36,12 @@ button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px s
 #status.success { color: #236442; }
 footer { border-top: 1px solid #e0e5dd; padding-top: 14px; font-size: 9px; color: #828b80; display: flex; justify-content: space-between; gap: 8px; }
 .translation-toggle { margin-bottom: 16px; font-weight: 600; }
+.translation-auto { margin: 0 0 10px; }
 .help { font-size: 11px; line-height: 1.6; color: #68736a; margin: 8px 0 12px; overflow-wrap: anywhere; }
 .help.error { color: #a33d2d; }
 a { color: #235b42; }
-details { border: 1px solid #d8ded6; padding: 12px; border-radius: 9px; margin: 12px 0; }
-summary { font-size: 12px; cursor: pointer; }
-details[open] summary { margin-bottom: 12px; }
 #translation-tools label { display: block; font-size: 12px; margin-bottom: 8px; }
-#google-key { width: 100%; padding: 10px; border: 1px solid #d8ded6; border-radius: 6px; font: 12px "Segoe UI", sans-serif; }
-.key-actions, .translation-actions { display: flex; gap: 8px; margin-top: 10px; }
-.key-actions button { padding: 9px; font-size: 11px; }
+.translation-actions { display: flex; gap: 8px; margin-top: 10px; }
+#open-translation-tab { margin-top: 8px; padding: 9px; font-size: 11px; }
 button.secondary { color: #235b42; background: #e4ecdf; }
 #translation { min-height: 120px; font-size: 15px; }
-.attribution { display: inline-block; margin-top: 10px; }
-.attribution img { display: block; max-width: 100%; height: auto; }

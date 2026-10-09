@@ -2,7 +2,7 @@
 
 A Chrome extension: click a field on a website and paste your text into a movable, always-on-top window. The text is immediately inserted into the selected field.
 
-English-to-Nepali translation is temporarily hidden and disabled. Its controls, key settings, and Google branding are not shown. Normal text insertion and the floating window remain available. Any previously saved API key is retained but is not read or used while translation is disabled.
+English-to-Nepali translation uses a separate [Google Translate tab](https://translate.google.com/?sl=en&tl=ne&op=translate). No API key or Google Cloud setup is needed. The previous API integration has been removed; any saved key is deleted when the updated extension's background worker starts.
 
 ## Install
 
@@ -25,25 +25,20 @@ Closing the floating window returns its controls and draft to the extension tab.
 
 You can also type text and click **Insert text**, or press Ctrl+Enter (Command+Enter on macOS). Turn off **Insert when I paste** to review text before inserting. **Replace field** replaces the entire value. **At cursor** replaces the selected text or inserts at the remembered cursor; input types without a text-selection API fall back to replacing the entire field. Pasting inserts the full contents of the extension text area. Empty text is not inserted. No forms are automatically submitted.
 
-## English to Nepali (currently disabled)
+## English to Nepali
 
-The implementation is retained for later restoration. Developers can restore it by changing `data-translation-enabled="false"` to `"true"` in `popup.html`, then reloading the extension. The instructions below apply only when it is enabled. Translation is powered by [Google Translate through the Cloud Translation API](https://cloud.google.com/translate).
+1. Turn on **English → Nepali** and type or paste English text.
+2. Optionally turn on **Auto-insert translation into an empty field**. This inserts a successful translation without waiting for you to click Insert; it refuses to change a field that already contains any text and asks you to select an empty field instead.
+3. Click **Translate to Nepali**. The extension briefly switches to a separate Google Translate tab, with English and Nepali selected and your text supplied in the page URL. When the result is ready, it returns to the website tab where you selected the field and shows the Nepali preview.
+4. If auto-insert is off, review or edit the Nepali preview, then click **Insert text** or press Ctrl+Enter (Command+Enter on macOS) in either text area.
 
-1. Follow [Google's setup guide](https://cloud.google.com/translate/docs/setup): create/select a Google Cloud project, enable billing, and enable the **Cloud Translation API**.
-2. Create an API key in Google Cloud **APIs & Services → Credentials**. Restrict the key to **Cloud Translation API**. This extension uses the Basic v2 API with the standard NMT model.
-3. Reload Field Inject in `chrome://extensions` after installing this update. Open it and turn on **English → Nepali**.
-4. Open **Google API key settings**, paste your key, and click **Save key**. Enter the key only in the extension; do not include it in source files or shared ZIPs.
-5. Type or paste English text and click **Translate with Google**. Review or edit the Nepali preview, then click **Insert text** or press Ctrl+Enter (Command+Enter on macOS) in either text area.
+The extension reuses the tab it created, including after reloading the extension's owner tab. It does not overwrite an existing Google Translate tab you opened yourself. If you close its tab, the next request creates another. If you navigate its tab to a different website, it leaves that tab alone and creates another. When translation finishes, it returns to the website tab associated with the selected field, even if you launched translation from the floating window. The destination field stays attached to your original website.
 
-Translation mode disables automatic insertion on paste. Only clicking **Translate with Google** sends the English text to Google. The original English stays available; editing it clears any old translation. Translation requires a valid preview before insertion, so an API error never falls back to inserting English. Switch **English → Nepali** off to return to normal text insertion. Translation works in both the extension tab and the always-on-top window.
+Translation mode disables automatic insertion on paste. Typing or pasting alone does not send text to Google. Editing the English or turning translation off cancels any pending request and clears the old preview. Failed translation never falls back to inserting English. **Cancel** stops waiting for a result, but cannot retract text already sent to Google. Both the owner tab and always-on-top window support translation.
 
-The extension accepts up to 5,000 Unicode characters per translation request. You can cancel a pending request; requests time out after 20 seconds. Cancellation cannot undo processing or charges if Google already received the request. API, billing, quota, and network errors appear beside the translation controls.
+The extension accepts up to 5,000 Unicode characters per request. It waits up to 35 seconds after opening the tab and checks that the displayed source text and selected languages match your request before returning a stable result. Only translated segments are read; dictionary entries and pronunciation text are excluded.
 
-Google's standard NMT tier currently includes the first **500,000 characters per month** free through a monthly credit; additional usage is billable. Billing setup is still required. The extension does **not** enforce a monthly free-tier cap or track usage from other applications. Review [Google's pricing](https://cloud.google.com/translate/pricing) and configure appropriate [Google Cloud quotas](https://cloud.google.com/translate/quotas). Translation quality varies; this feature makes no 95% accuracy guarantee.
-
-The API key is stored in this browser profile's local extension storage, with access restricted to trusted extension contexts. It is not synced, embedded in the package, exposed to content scripts, or sent in request URLs. It is not an encrypted credential vault. **Remove key** deletes the saved key. For a public product with a shared developer credential, use a backend instead of shipping a shared key in an extension.
-
-The Google attribution badge in `icons/google-translate.png` comes unmodified from [Google's official attribution assets](https://cloud.google.com/translate/attribution). See Google's [translation disclaimer](https://cloud.google.com/translate/attribution#disclaimer).
+If Google shows a consent page, CAPTCHA, connection error, or a changed page layout, use **Open Google Translate tab** to inspect it and complete any prompts yourself, then retry. The extension does not bypass prompts. The integration depends on Google's website layout and may need maintenance if it changes. Translation quality varies; review the result before inserting.
 
 ## Compatibility and privacy
 
@@ -53,14 +48,14 @@ The Google attribution badge in `icons/google-translate.png` comes unmodified fr
 - Read-only, disabled, hidden, and removed fields cannot be filled. Number fields require numeric text; websites may apply their own validation or formatting.
 - To use local HTML files, enable **Allow access to file URLs** on the extension's details page. Incognito requires Chrome's separate **Allow in Incognito** setting.
 - Website access is needed to remember the selected field across page frames. `scripting` inserts text into that field; `activeTab` identifies the current page when you click the toolbar icon. Content scripts run in Chrome's isolated extension world. See [Chrome's content script documentation](https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts).
-- No extension backend, analytics, remote scripts, or clipboard-read permission. Normal field insertion makes no translation requests. When you click **Translate with Google**, the English draft and API key are sent over HTTPS directly to Google's Cloud Translation API; see [Google's data usage FAQ](https://cloud.google.com/translate/data-usage). Drafts and translation results remain in extension memory until the extension tab is closed or reloaded; only the API key is saved locally using the `storage` permission. The floating form belongs to the extension, so websites cannot read its draft. Field references and cursor positions stay in page memory until the page unloads. Inserted text becomes part of the destination website's field and is subject to that website's behavior.
+- No extension backend, analytics, remote scripts, or clipboard-read permission. Normal field insertion does not send text to Google. Translation opens the Google Translate website with your English text in its URL, so that text may appear in browser history, history sync, and Google's website/account activity according to your settings. Canceling or closing the extension does not erase that history or close the Google tab. Only the helper tab ID is kept in session storage; drafts and results are not stored by the extension. The `storage` permission also allows removal of credentials from the retired integration. The floating form belongs to the extension, so destination websites cannot read its draft. Inserted text becomes part of the destination website and is subject to its behavior.
 
 ## Development
 
 The extension is plain JavaScript, HTML, and CSS. No build step or runtime dependencies are required. After edits, click **Reload** on `chrome://extensions` and refresh the destination page.
 
-Translation checks run only when `data-translation-enabled` is `true`; the current disabled version runs the 22 core insertion and floating-window checks.
+Run `npm install`, `npx playwright install chromium`, then `npm test`. Tests load the actual extension in a temporary Chromium profile, exercise insertion and Picture-in-Picture, and use simulated Google Translate pages to check tab reuse, source matching, multiline extraction, cancellation, stale results, closing tabs, and preview editing. No real text is sent to Google by this suite.
 
-To run the browser checks: `npm install`, `npx playwright install chromium`, then `npm test`. Tests load the actual extension in a temporary Chromium profile and exercise field insertion against local pages, including a cross-origin frame. They also open a real Picture-in-Picture window, check live target changes and navigation, reuse the window for another tab, and verify draft preservation and window cleanup. Translation tests intercept the Google endpoint with simulated responses and a fake key: they exercise request format, key storage, preview editing, cancellation, stale results, API errors, and translation in the floating window without paid calls. They do not measure translation accuracy or validate a real Google account. Screenshots are saved in `test-results/`, including `nepali-translation.png`.
+Run `npm run test:live` for an optional online smoke test. It sends only two synthetic English examples to the real Google Translate website and checks preview, insertion, tab reuse, and the floating window. It needs network access and may fail if Google shows a prompt or changes its layout. These checks verify integration behavior, not translation accuracy. Screenshots are saved in `test-results/`.
 #   f e i l d i n p u t  
  

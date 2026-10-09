@@ -184,6 +184,24 @@ const os = require('node:os');
 
     await page.locator('#notes').click();
     await floating.waitForFunction(() => document.querySelector('#field').textContent === 'Notes');
+    const existingNotes = await page.locator('#notes').inputValue();
+    const guardedInsert = await worker.evaluate(async address => {
+      const [tab] = await chrome.tabs.query({ url: address });
+      const [frame] = await chrome.scripting.executeScript({
+        target: { tabId: tab.id },
+        func: () => {
+          const selected = globalThis.__fieldInject.describe();
+          return globalThis.__fieldInject.inject({
+            id: selected.id, text: 'Must not overwrite', mode: 'replace', requireEmpty: true
+          });
+        }
+      });
+      return frame.result;
+    }, address);
+    assert.equal(guardedInsert.ok, false);
+    assert.match(guardedInsert.error, /Select an empty field/);
+    assert.equal(await page.locator('#notes').inputValue(), existingNotes);
+    pass('Automatic insert guard refuses to overwrite a populated destination');
     await floating.locator('#insert').click();
     await floating.waitForFunction(() => document.querySelector('#status').className === 'success');
     assert.equal(await page.locator('#notes').inputValue(), 'Draft survives floating');
@@ -240,9 +258,7 @@ const os = require('node:os');
     await owner.close();
     await closed;
     pass('Floating window can reopen and closes when its owner tab closes');
-    if (await popup.evaluate(() => document.documentElement.dataset.translationEnabled === 'true')) {
-      await require('./translation.cjs')({ context, page, worker, extension, root, pass });
-    }
+    await require('./translation.cjs')({ context, page, worker, extension, root, pass });
     console.log(`${passed} browser checks passed.`);
   } finally {
     await context?.close();

@@ -1,6 +1,8 @@
 // Keep an extension tab alive as the owner of the always-on-top window.
 // A toolbar popup cannot own it: Chrome destroys that popup on blur.
 let opening = Promise.resolve();
+// One-way migration: discard credentials saved by the retired API integration.
+chrome.storage.local.remove('googleTranslationKey').catch(() => {});
 chrome.action.onClicked.addListener(tab => {
   opening = opening.catch(() => {}).then(() => openForTab(tab))
     .catch(error => console.error('Could not open Field Inject:', error));

@@ -63,11 +63,16 @@
       type: selected.type || 'editable text', selectedAt };
   }
 
-  function inject({ id, text, mode }) {
+  function inject({ id, text, mode, requireEmpty = false }) {
     if (!available(selected) || ids.get(selected) !== id) {
       return { ok: false, error: 'That field changed or disappeared. Select it again on your website.' };
     }
     const node = selected;
+    const currentValue = node instanceof HTMLInputElement || node instanceof HTMLTextAreaElement ?
+      node.value : node.textContent;
+    if (requireEmpty && currentValue.length > 0) {
+      return { ok: false, error: 'This field is not empty. Select an empty field before auto-inserting a translation.' };
+    }
     const range = savedSelection;
     node.focus({ preventScroll: true });
     const before = new InputEvent('beforeinput', {

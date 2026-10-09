@@ -18,20 +18,7 @@ let busy = false;
 let scanning = null;
 let generation = 0;
 let floatingWindow = null;
-// Translation is temporarily hidden; retain its implementation for later use.
-const translationEnabled = document.documentElement.dataset.translationEnabled === 'true';
-const translator = translationEnabled ? createNepaliTranslation(panel, value, update) :
-  { enabled: false, get text() { return value.value; } };
-if (translationEnabled) {
-  panel.querySelector('.translation-toggle').hidden = false;
-  panel.querySelector('#footer-note').textContent = 'Translation powered by Google';
-  // Keep the attribution self-contained when controls move to the PiP document.
-  const attribution = panel.querySelector('.attribution img');
-  fetch(chrome.runtime.getURL('icons/google-translate.png'))
-    .then(response => response.arrayBuffer())
-    .then(buffer => { attribution.src = `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(buffer)))}`; })
-    .catch(() => { /* The original local image remains available in the owner tab. */ });
-}
+const translator = createNepaliTranslation(panel, value, update, () => tabId, () => fill({ requireEmpty: true }));
 
 const owner = document.createElement('section');
 owner.className = 'owner';
@@ -103,7 +90,7 @@ async function scan() {
   }
 }
 
-async function fill() {
+async function fill({ requireEmpty = false } = {}) {
   await ready;
   if (busy || translator.text.length === 0) return;
   busy = true;
@@ -117,7 +104,7 @@ async function fill() {
     const [result] = await chrome.scripting.executeScript({
       target: { tabId, documentIds: [target.documentId] },
       func: payload => globalThis.__fieldInject?.inject(payload),
-      args: [{ id: target.result.id, text: translator.text, mode: panel.querySelector('#mode').value }]
+      args: [{ id: target.result.id, text: translator.text, mode: panel.querySelector('#mode').value, requireEmpty }]
     });
     if (!result?.result?.ok) throw new Error(result?.result?.error || 'The field is no longer available. Select it again on your website.');
     message('Inserted into the selected field.', 'success');
@@ -138,7 +125,7 @@ if (persistent) {
     if (!Number.isInteger(request.tabId)) return;
     // Clicking our own owner tab must not replace the website target.
     chrome.tabs.getCurrent().then(async current => {
-      if (request.tabId !== current?.id) {
+      if (request.tabId !== current?.id && !translator.isHelperTab(request.tabId)) {
         generation++;
         tabId = request.tabId;
         history.replaceState(null, '', `?tabId=${tabId}`);

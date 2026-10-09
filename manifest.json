@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Field Inject",
-  "version": "1.2.1",
-  "description": "Fill a selected website field from a movable, always-on-top window.",
+  "version": "1.3.0",
+  "description": "Fill website fields from an always-on-top window, with English-to-Nepali translation through a separate Google Translate tab.",
   "minimum_chrome_version": "119",
   "permissions": ["activeTab", "scripting", "storage"],
   "background": { "service_worker": "background.js" },
