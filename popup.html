@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-translation-enabled="false">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,7 +21,7 @@
     <span id="site">Select a field on the page first.</span>
   </section>
   <form id="form">
-    <label class="toggle translation-toggle"><input id="nepali" type="checkbox"> English → Nepali</label>
+    <label class="toggle translation-toggle" hidden><input id="nepali" type="checkbox"> English → Nepali</label>
     <div class="label-row"><label for="value">Text to insert</label><span id="count">0 characters</span></div>
     <textarea id="value" placeholder="Paste your text here…" spellcheck="false" autofocus></textarea>
     <section id="translation-tools" aria-label="English to Nepali translation" hidden>
@@ -53,6 +53,6 @@
     <button id="insert" type="submit" disabled>Insert text <span aria-hidden="true">↗</span></button>
   </form>
   <p id="status" role="status" aria-live="polite">Click a field on your website, then paste here.</p>
-  <footer>Translation powered by Google <span>Ctrl / ⌘ + Enter to insert</span></footer>
+  <footer><span id="footer-note">Stays in your browser</span><span>Ctrl / ⌘ + Enter to insert</span></footer>
 </body>
 </html>

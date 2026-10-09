@@ -240,7 +240,9 @@ const os = require('node:os');
     await owner.close();
     await closed;
     pass('Floating window can reopen and closes when its owner tab closes');
-    await require('./translation.cjs')({ context, page, worker, extension, root, pass });
+    if (await popup.evaluate(() => document.documentElement.dataset.translationEnabled === 'true')) {
+      await require('./translation.cjs')({ context, page, worker, extension, root, pass });
+    }
     console.log(`${passed} browser checks passed.`);
   } finally {
     await context?.close();

@@ -18,13 +18,20 @@ let busy = false;
 let scanning = null;
 let generation = 0;
 let floatingWindow = null;
-const translator = createNepaliTranslation(panel, value, update);
-// Keep the attribution self-contained when controls move to the PiP document.
-const attribution = panel.querySelector('.attribution img');
-fetch(chrome.runtime.getURL('icons/google-translate.png'))
-  .then(response => response.arrayBuffer())
-  .then(buffer => { attribution.src = `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(buffer)))}`; })
-  .catch(() => { /* The original local image remains available in the owner tab. */ });
+// Translation is temporarily hidden; retain its implementation for later use.
+const translationEnabled = document.documentElement.dataset.translationEnabled === 'true';
+const translator = translationEnabled ? createNepaliTranslation(panel, value, update) :
+  { enabled: false, get text() { return value.value; } };
+if (translationEnabled) {
+  panel.querySelector('.translation-toggle').hidden = false;
+  panel.querySelector('#footer-note').textContent = 'Translation powered by Google';
+  // Keep the attribution self-contained when controls move to the PiP document.
+  const attribution = panel.querySelector('.attribution img');
+  fetch(chrome.runtime.getURL('icons/google-translate.png'))
+    .then(response => response.arrayBuffer())
+    .then(buffer => { attribution.src = `data:image/png;base64,${btoa(String.fromCharCode(...new Uint8Array(buffer)))}`; })
+    .catch(() => { /* The original local image remains available in the owner tab. */ });
+}
 
 const owner = document.createElement('section');
 owner.className = 'owner';

@@ -2,7 +2,7 @@
 
 A Chrome extension: click a field on a website and paste your text into a movable, always-on-top window. The text is immediately inserted into the selected field.
 
-Optional English-to-Nepali translation is powered by [Google Translate through the Cloud Translation API](https://cloud.google.com/translate).
+English-to-Nepali translation is temporarily hidden and disabled. Its controls, key settings, and Google branding are not shown. Normal text insertion and the floating window remain available. Any previously saved API key is retained but is not read or used while translation is disabled.
 
 ## Install
 
@@ -25,7 +25,9 @@ Closing the floating window returns its controls and draft to the extension tab.
 
 You can also type text and click **Insert text**, or press Ctrl+Enter (Command+Enter on macOS). Turn off **Insert when I paste** to review text before inserting. **Replace field** replaces the entire value. **At cursor** replaces the selected text or inserts at the remembered cursor; input types without a text-selection API fall back to replacing the entire field. Pasting inserts the full contents of the extension text area. Empty text is not inserted. No forms are automatically submitted.
 
-## English to Nepali
+## English to Nepali (currently disabled)
+
+The implementation is retained for later restoration. Developers can restore it by changing `data-translation-enabled="false"` to `"true"` in `popup.html`, then reloading the extension. The instructions below apply only when it is enabled. Translation is powered by [Google Translate through the Cloud Translation API](https://cloud.google.com/translate).
 
 1. Follow [Google's setup guide](https://cloud.google.com/translate/docs/setup): create/select a Google Cloud project, enable billing, and enable the **Cloud Translation API**.
 2. Create an API key in Google Cloud **APIs & Services → Credentials**. Restrict the key to **Cloud Translation API**. This extension uses the Basic v2 API with the standard NMT model.
@@ -56,6 +58,8 @@ The Google attribution badge in `icons/google-translate.png` comes unmodified fr
 ## Development
 
 The extension is plain JavaScript, HTML, and CSS. No build step or runtime dependencies are required. After edits, click **Reload** on `chrome://extensions` and refresh the destination page.
+
+Translation checks run only when `data-translation-enabled` is `true`; the current disabled version runs the 22 core insertion and floating-window checks.
 
 To run the browser checks: `npm install`, `npx playwright install chromium`, then `npm test`. Tests load the actual extension in a temporary Chromium profile and exercise field insertion against local pages, including a cross-origin frame. They also open a real Picture-in-Picture window, check live target changes and navigation, reuse the window for another tab, and verify draft preservation and window cleanup. Translation tests intercept the Google endpoint with simulated responses and a fake key: they exercise request format, key storage, preview editing, cancellation, stale results, API errors, and translation in the floating window without paid calls. They do not measure translation accuracy or validate a real Google account. Screenshots are saved in `test-results/`, including `nepali-translation.png`.
 #   f e i l d i n p u t  
