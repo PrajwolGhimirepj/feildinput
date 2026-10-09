@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Field Inject</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="translation.js" defer></script>
+  <script src="popup.js" defer></script>
+</head>
+<body>
+  <header>
+    <div class="logo" aria-hidden="true">↳</div>
+    <div><h1>Field Inject</h1><p>Your text. Right where it belongs.</p></div>
+  </header>
+  <button id="float" type="button">Open always-on-top window</button>
+  <p id="window-hint">Drag the floating window by its title bar. Keep this tab open.</p>
+  <section class="target" aria-label="Selected field">
+    <span class="eyebrow"><span id="dot" class="dot"></span> SELECTED FIELD</span>
+    <strong id="field">Finding your field…</strong>
+    <span id="site">Select a field on the page first.</span>
+  </section>
+  <form id="form">
+    <label class="toggle translation-toggle"><input id="nepali" type="checkbox"> English → Nepali</label>
+    <div class="label-row"><label for="value">Text to insert</label><span id="count">0 characters</span></div>
+    <textarea id="value" placeholder="Paste your text here…" spellcheck="false" autofocus></textarea>
+    <section id="translation-tools" aria-label="English to Nepali translation" hidden>
+      <p class="help">Translate sends this text to Google. Review the Nepali before inserting.</p>
+      <details id="google-settings">
+        <summary>Google API key settings</summary>
+        <label for="google-key">Your Cloud Translation API key</label>
+        <input id="google-key" type="password" autocomplete="off" spellcheck="false" placeholder="Paste API key here">
+        <div class="key-actions"><button id="save-key" type="button">Save key</button><button id="remove-key" type="button" class="secondary">Remove key</button></div>
+        <p id="key-status" class="help" role="status">Loading settings…</p>
+        <p class="help">Saved on this device. Google Cloud setup and billing are required; usage beyond the free allowance can cost money. <a href="https://cloud.google.com/translate/docs/setup" target="_blank" rel="noopener noreferrer">Setup guide</a></p>
+      </details>
+      <div class="translation-actions"><button id="translate" type="button">Translate with Google</button><button id="cancel-translation" type="button" class="secondary" hidden>Cancel</button></div>
+      <p id="translation-status" class="help" role="status" aria-live="polite"></p>
+      <div id="translation-preview" hidden>
+        <label for="translation">Nepali translation · edit before inserting</label>
+        <textarea id="translation" lang="ne" spellcheck="false"></textarea>
+        <a class="attribution" href="https://translate.google.com" target="_blank" rel="noopener noreferrer"><img src="icons/google-translate.png" alt="Powered by Google Translate"></a>
+        <p class="help">Automatic translation may contain errors. <a href="https://cloud.google.com/translate/attribution#disclaimer" target="_blank" rel="noopener noreferrer">Google translation disclaimer</a></p>
+      </div>
+    </section>
+    <div class="options">
+      <label class="toggle"><input id="auto" type="checkbox" checked> Insert when I paste</label>
+      <select id="mode" aria-label="Insertion mode">
+        <option value="replace">Replace field</option>
+        <option value="cursor">At cursor</option>
+      </select>
+    </div>
+    <button id="insert" type="submit" disabled>Insert text <span aria-hidden="true">↗</span></button>
+  </form>
+  <p id="status" role="status" aria-live="polite">Click a field on your website, then paste here.</p>
+  <footer>Translation powered by Google <span>Ctrl / ⌘ + Enter to insert</span></footer>
+</body>
+</html>

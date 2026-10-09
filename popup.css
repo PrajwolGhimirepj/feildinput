@@ -1,0 +1,52 @@
+:root { color-scheme: light; font-family: "Segoe UI", system-ui, sans-serif; color: #202924; background: #f7f8f5; }
+* { box-sizing: border-box; }
+body { min-width: 280px; margin: 0; }
+.panel { width: 100%; max-width: 420px; margin: 0 auto; padding: 24px; }
+#float { background: #e4ecdf; color: #235b42; padding: 10px; }
+#float:hover { background: #d5e3ce; }
+#window-hint { font-size: 11px; line-height: 1.5; color: #69746b; margin: 8px 0 20px; }
+.owner { max-width: 420px; margin: 60px auto; padding: 24px; font-size: 14px; line-height: 1.6; }
+[hidden] { display: none !important; }
+header { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; }
+.logo { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; color: #fff; background: #235b42; font-size: 32px; line-height: 1; }
+h1 { font-size: 20px; letter-spacing: -.6px; margin: 0 0 3px; }
+header p { font-size: 11px; color: #69746b; margin: 0; }
+.target { display: flex; flex-direction: column; gap: 7px; background: #edf1e9; border: 1px solid #dce4d7; border-radius: 12px; padding: 15px; margin-bottom: 22px; }
+.eyebrow { font-size: 9px; letter-spacing: 1.4px; font-weight: 700; color: #657460; display: flex; align-items: center; gap: 6px; }
+.dot { width: 6px; height: 6px; background: #929c8c; border-radius: 50%; }
+.dot.ready { background: #318253; box-shadow: 0 0 0 3px #31825315; }
+#field { font-size: 14px; overflow-wrap: anywhere; }
+#site { font-size: 11px; color: #71806e; overflow-wrap: anywhere; }
+.label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+.label-row label { font-size: 12px; font-weight: 600; }
+#count { font-size: 10px; color: #7c857e; }
+textarea { width: 100%; min-height: 156px; resize: vertical; border: 1px solid #d8ded6; border-radius: 10px; padding: 13px; font: 13px/1.6 "Segoe UI", system-ui, sans-serif; color: #25372a; background: white; }
+textarea::placeholder { color: #929a92; }
+textarea:focus { outline: 2px solid #39724d; outline-offset: 2px; }
+.options { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 13px 0 18px; }
+.toggle { display: flex; align-items: center; gap: 5px; font-size: 11px; cursor: pointer; }
+input[type=checkbox] { accent-color: #235b42; margin: 0; }
+select { max-width: 132px; font: inherit; font-size: 11px; border: 1px solid #d8ded6; border-radius: 6px; background: #fff; padding: 6px; color: #46594b; }
+button { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; border: 0; border-radius: 9px; padding: 13px; background: #235b42; color: #fff; font: 600 13px "Segoe UI", system-ui, sans-serif; cursor: pointer; }
+button:hover { background: #194b34; }
+button:disabled { opacity: .45; cursor: not-allowed; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid #39724d; outline-offset: 3px; }
+#status { min-height: 32px; font-size: 11px; line-height: 1.5; margin: 12px 0 16px; color: #68736a; }
+#status.error { color: #a33d2d; }
+#status.success { color: #236442; }
+footer { border-top: 1px solid #e0e5dd; padding-top: 14px; font-size: 9px; color: #828b80; display: flex; justify-content: space-between; gap: 8px; }
+.translation-toggle { margin-bottom: 16px; font-weight: 600; }
+.help { font-size: 11px; line-height: 1.6; color: #68736a; margin: 8px 0 12px; overflow-wrap: anywhere; }
+.help.error { color: #a33d2d; }
+a { color: #235b42; }
+details { border: 1px solid #d8ded6; padding: 12px; border-radius: 9px; margin: 12px 0; }
+summary { font-size: 12px; cursor: pointer; }
+details[open] summary { margin-bottom: 12px; }
+#translation-tools label { display: block; font-size: 12px; margin-bottom: 8px; }
+#google-key { width: 100%; padding: 10px; border: 1px solid #d8ded6; border-radius: 6px; font: 12px "Segoe UI", sans-serif; }
+.key-actions, .translation-actions { display: flex; gap: 8px; margin-top: 10px; }
+.key-actions button { padding: 9px; font-size: 11px; }
+button.secondary { color: #235b42; background: #e4ecdf; }
+#translation { min-height: 120px; font-size: 15px; }
+.attribution { display: inline-block; margin-top: 10px; }
+.attribution img { display: block; max-width: 100%; height: auto; }
